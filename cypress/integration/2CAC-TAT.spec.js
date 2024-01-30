@@ -96,7 +96,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
         cy.get('.success').should('be.visible')
     })
-    
+ //Campo do tipo Select   
     it('seleciona um produto (YouTube) por seu texto', function() {
         cy.get('#product')
           .select('YouTube')
@@ -114,7 +114,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
           .select(1)
           .should('have.value', 'blog')
     })
-
+//Tipo Radio
     it('marca o tipo de atendimento "Feedback"', function() {
         cy.get('input[type="radio"][value="feedback"]').check()
           .should('have.value', 'feedback')
@@ -190,6 +190,5 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.contains('Talking About Testing').should('be.visible')
   })
   //Aula 8. Simulando o Viewport de um dispositivo móvel
-  
 })
   //O bloco describe define a suíte de testes, e o bloco it, define um caso de teste.
