@@ -5,7 +5,7 @@
 // check out the link below and learn how to write your first test:
 // https://on.cypress.io/writing-first-test
 /// <reference types="Cypress" />
-
+  //O bloco describe define a suíte de testes, e o bloco it, define um caso de teste.
 describe('Central de Atendimento ao Cliente TAT', function() {
     beforeEach(function(){
         cy.visit('./src/index.html')
@@ -190,5 +190,69 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       cy.contains('Talking About Testing').should('be.visible')
   })
   //Aula 8. Simulando o Viewport de um dispositivo móvel
+    it('preenche os campos obrigatórios e envia o formulário com clock e tick', function(){
+    const longtext = 'Desde que Vasco e Bahia se enfrentaram pela última vez, em agosto do ano passado pela Série B, muita coisa mudou dos dois lados. O cruz-maltino passava por ajustes iniciais depois de vender a SAF para a 777 Partners, e o Bahia ainda não havia formalizado o acordo com o Grupo City, que será acertado oficialmente na quarta-feira, mas o acordo já está em vigor desde dezembro.'
+    cy.clock()
+    
+    cy.get('#firstName').type('Phelipe')
+    cy.get('#lastName').type('Rocha')
+    cy.get('#email').type('pheliperocha@gmail.com')
+    cy.get('#open-text-area').type(longtext, {delay: 0 })
+    cy.contains('button', 'Enviar').click()
+
+    cy.get('.success').should('be.visible')
+    cy.tick(3000)
+    cy.get('.success').should('not.be.visible')
+  })
+
+  Cypress._.times(3, function() {
+    it('campo telefone vazio quando preenche valores nao numericos, com times',function() { 
+      cy.get('#phone')
+      .type('abcdefghi')
+      .should('have.value','')
+    })
+  })
+
+  it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+  })
+
+  it('preenche a aba de texto usando o comando invoke', function(){
+    const longtext = Cypress._.repeat('0123456789', 20)
+    cy.get('#open-text-area')
+      .invoke('val', longtext)
+      .should('have.value', longtext)
+  })
+  it('faz uma requisição HTTP', function() {
+    cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+    .should(function(response) {
+      console.log(response)
+      const { status, statusText, body} = response //extraindo informações da response
+      expect(status).to.equal(200)
+      expect(statusText).to.equal('OK')
+      expect(body).to.include('CAC TAT')
+    })
+  })
+  it('encontra o gato escondido', function() {
+    cy.get('#cat')
+      .invoke('show')
+      .should('be.visible')
+    cy.get('#title')
+      .invoke('text', 'CAT TAT')
+    cy.get('#subtitle')
+      .invoke('text', 'Eu 💚 gatos') //emojis retirados do site https://emojipedia.org/red-heart
+  })
 })
-  //O bloco describe define a suíte de testes, e o bloco it, define um caso de teste.
